@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -218,5 +217,15 @@ public class MemberController {
     	}
     	
     	return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+    
+    //멤버 1명 정보 조회
+    @GetMapping("/one")
+    public ResponseEntity getOneMember() {
+    	String email = SecurityUtil.getCurrentEmail();
+    	
+    	Member memberOne = memberService.findByEmail(email);
+    	
+    	return new ResponseEntity<>(memberOne, HttpStatus.OK);
     }
 }
