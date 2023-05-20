@@ -19,7 +19,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.example.DTO.TokenInfo;
+import com.example.domain.Member;
+import com.example.repository.MemberRepository;
 import com.example.repository.RefreshTokenRepository;
+import com.example.service.MemberService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -42,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtTokenProvider {
 
 	@Autowired private RefreshTokenRepository refreshTokenRepository;
-	
+	@Autowired private MemberRepository memberRepository;
 	//JWT KEY
 	private final Key key;
 	
@@ -113,12 +116,25 @@ public class JwtTokenProvider {
                 Arrays.stream(claims.get("auth").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
-        
+        System.out.println("권한들"+authorities);
         // UserDetails 객체를 만들어서 권한정보(Authentication) 리턴
         UserDetails principal = new User(claims.getSubject(), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
  
+  //JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+    public Authentication fgetAuthentication(String snsid) {
+        Member member = memberRepository.findBySnsId(snsid);
+        // 클레임에서 권한 정보 가져오기
+        Collection<? extends GrantedAuthority> authorities = member.getAuthorities();
+        
+        System.out.println("권한들"+authorities);
+        
+        // UserDetails 객체를 만들어서 권한정보(Authentication) 리턴
+        UserDetails principal = new User(snsid, "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    }
+    
 	// access 토큰 생성(refresh토큰으로 검증 후 재 생성시 사용)
     public String createToken(String account, List<String> authorities) {
         Claims claims = Jwts.claims().setSubject(account);

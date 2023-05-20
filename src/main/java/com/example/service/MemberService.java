@@ -33,7 +33,7 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
-	private final JwtTokenProvider jwtTokenProvider;
+//	private final JwtTokenProvider jwtTokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final PasswordEncoder passwordEncoder;
 
@@ -51,8 +51,8 @@ public class MemberService {
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		
 		// 3. 인증 정보를 기반으로 JWT 토큰 생성
-		tokenInfo = jwtTokenProvider.generateToken(authentication);
-		
+//		tokenInfo = jwtTokenProvider.generateToken(authentication);
+		tokenInfo = null;
 		return tokenInfo;
 	}
 	
@@ -70,8 +70,8 @@ public class MemberService {
 		
         Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, roles);
         
-        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-		
+//        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+        TokenInfo tokenInfo = null;
 		return tokenInfo;
 	}
 	
@@ -134,8 +134,8 @@ public class MemberService {
 	//RTK검증
 	public RefreshToken validRefreshToken(TokenInfo tokens) throws Exception {
 		//토큰에 저장되어있는 email(subject)조회
-		String email = jwtTokenProvider.getAccount(tokens.getAccessToken());
-		
+//		String email = jwtTokenProvider.getAccount(tokens.getAccessToken());
+		String email = null;
 		//조회된 email로 member Entity에서 유저정보 조회
 		Member member = memberRepository.findByEmail(email)
 				.orElseThrow(() -> new BadCredentialsException("잘못된 계정정보입니다."));
@@ -156,8 +156,8 @@ public class MemberService {
 	//ATK토큰 재발행
 	public TokenInfo refreshAccessTokenGen(TokenInfo token) throws Exception {
 		//토큰에서 email조회
-		String email = jwtTokenProvider.getAccount(token.getAccessToken());
-		
+//		String email = jwtTokenProvider.getAccount(token.getAccessToken());
+		String email = null;
 		//조회된 email로 Member조회
 		Member member = memberRepository.findByEmail(email)
 				.orElseThrow(() -> new BadCredentialsException("잘못된 계정정보입니다."));
@@ -167,8 +167,9 @@ public class MemberService {
 				.orElseThrow(() -> new Exception("만료된 계정입니다. 로그인을 다시 시도하세요"));
 			
 		//토큰정보 리턴시 ATK재생성
-		return TokenInfo.builder().accessToken(jwtTokenProvider.createToken(email, member.getRoles()))
-				.refreshToken(refreshToken.getRefresh_token()).build();
+//		return TokenInfo.builder().accessToken(jwtTokenProvider.createToken(email, member.getRoles()))
+//				.refreshToken(refreshToken.getRefresh_token()).build();
+		return TokenInfo.builder().accessToken(null).build();
 	}
 
 	//이메일로 유저정보 조회

@@ -34,7 +34,8 @@ public class SecurityConfig {
                 	//해당페이지(로그인, 회원가입,ATK재발급, RTK검증)는 인증없이 접근 허용됨
 	                .requestMatchers("/api/members/login","/api/members/join","/api/members/refreshaccesstoken","/api/members/refreshcheck",
 	                		"/api/members/snscheck","/api/members/snslogin","/api/members/snsjoin","/api/members/emailcheck",
-	                		"/api/members/logout","/api/mail/sendemailpw","/api/mail/checkemail").permitAll() 
+	                		"/api/members/logout","/api/mail/sendemailpw","/api/mail/checkemail","/api/bestsellerbookall",
+	                		"api/members/fsnslogincheck","/api/members/fsnslogin").permitAll() 
 	                .requestMatchers("/api/admin/*").hasRole("ADMIN") //해당 페이지는 ADMIN권한 가진 유저만 접근됨
 	                .anyRequest().authenticated() //그 외 모든 요청에 대해 인증이 필요함.
 	            .and()
